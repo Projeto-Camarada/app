@@ -1,98 +1,130 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from "expo-router";
+import {
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
+export default function Index() {
     return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.content}>
+
+                <Text style={styles.logo}>🤝</Text>
+
+                <Text style={styles.title}>
+                    Camarada
+                </Text>
+
+                <Text style={styles.subtitle}>
+                    Encontre profissionais ou ofereça seus serviços.
+                </Text>
+
+                <TouchableOpacity
+                    style={styles.primaryButton}
+                    onPress={() => router.push("/(auth)/login")}
+                >
+                    <Text style={styles.primaryText}>Entrar</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.secondaryButton}
+                    onPress={() => router.push("/(auth)/register")}
+                >
+                    <Text style={styles.secondaryText}>Criar conta</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.googleButton}
+                    onPress={() => {
+                        // Login Google futuramente
+                    }}
+                >
+                    <Text style={styles.googleText}>
+                        Continuar com Google
+                    </Text>
+                </TouchableOpacity>
+
+            </View>
+        </SafeAreaView>
     );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
-
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
-  );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
+    container: {
+        flex: 1,
+        backgroundColor: "#FFF",
+    },
+
+    content: {
+        flex: 1,
+        justifyContent: "center",
+        paddingHorizontal: 30,
+    },
+
+    logo: {
+        fontSize: 70,
+        textAlign: "center",
+        marginBottom: 20,
+    },
+
+    title: {
+        fontSize: 34,
+        fontWeight: "700",
+        textAlign: "center",
+    },
+
+    subtitle: {
+        textAlign: "center",
+        color: "#666",
+        marginTop: 10,
+        marginBottom: 50,
+        fontSize: 16,
+    },
+
+    primaryButton: {
+        backgroundColor: "#ff6b00",
+        height: 55,
+        borderRadius: 14,
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 15,
+    },
+
+    primaryText: {
+        color: "#FFF",
+        fontWeight: "700",
+        fontSize: 17,
+    },
+
+    secondaryButton: {
+        borderWidth: 1,
+        borderColor: "#ff6b00",
+        height: 55,
+        borderRadius: 14,
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 15,
+    },
+
+    secondaryText: {
+        color: "#ff6b00",
+        fontWeight: "700",
+        fontSize: 17,
+    },
+
+    googleButton: {
+        height: 55,
+        borderRadius: 14,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#F2F2F2",
+    },
+
+    googleText: {
+        fontSize: 16,
+        fontWeight: "600",
+    },
 });
