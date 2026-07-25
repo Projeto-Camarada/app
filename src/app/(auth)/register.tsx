@@ -103,8 +103,9 @@ export default function RegisterScreen() {
             console.log(form);
 
             // await api.post("/auth/register", form);
+            router.push("/home")
 
-            router.replace("/(auth)/login");
+            // router.replace("/(auth)/login");
         } catch (err) {
             console.log(err);
         }

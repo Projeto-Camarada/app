@@ -1,14 +1,16 @@
 import { Stack } from 'expo-router';
-import { ThemeProvider, DarkTheme, DefaultTheme } from "@react-navigation/native"
+import { ThemeProvider, DarkTheme } from "@react-navigation/native"
+
 import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from 'react-native';
+import { DefaultTheme } from '@/constants/DefaultTheme';
 
 // SplashScreen.preventAutoHideAsync();
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
     return (
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <ThemeProvider value={DefaultTheme}>
             <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="index"/>
                 <Stack.Screen name="(auth)"/>
@@ -17,3 +19,5 @@ export default function TabLayout() {
         </ThemeProvider>
     );
 }
+
+// https://chatgpt.com/c/6a603ce4-ab44-83e9-a376-0601ce031dd3
