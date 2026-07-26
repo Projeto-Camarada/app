@@ -12,19 +12,16 @@ const sizes = {
         logo: 40,
         title: 22,
         subtitle: 13,
-        logoMargin: 8
     },
     medium: {
         logo: 55,
         title: 28,
         subtitle: 15,
-        logoMargin: 14
     },
     large: {
         logo: 70,
         title: 34,
         subtitle: 16,
-        logoMargin: 20
     },
 };
 
@@ -42,7 +39,6 @@ export default function Logo({
                 style={[
                     styles.logo,
                     { fontSize: currentSize.logo },    
-                    { marginBottom: currentSize.logoMargin}
                 ]}
             >
                 🤝

@@ -11,6 +11,7 @@ import {
     Alert,
 } from "react-native";
 import { router } from "expo-router";
+import EyeButton from "@/components/EyeButton";
 
 export default function RegisterScreen() {
     const [step, setStep] = useState(0);
@@ -163,17 +164,10 @@ export default function RegisterScreen() {
                 />
 
                 {current.key === "password" && (
-                    <TouchableOpacity
-                        onPress={() => setShowPassword(!showPassword)}
-                        style={styles.eyeButton}
-                    >
-                        <Ionicons
-                            name={showPassword ? "eye-off-outline" : "eye-outline"}
-                            size={24}
-                            color="#666"
-                        />
-
-                    </TouchableOpacity>
+                 <EyeButton 
+                    text={showPassword}
+                    showText={setShowPassword}
+                 />
                 )}
             </View>
 
@@ -280,11 +274,5 @@ const styles = StyleSheet.create({
         position: "relative",
         flexDirection: "row",
         alignItems: "center",
-    },
-
-    eyeButton: {
-        padding: 8,
-        position: "absolute",
-        right: 15
     },
 });

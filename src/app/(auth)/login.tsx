@@ -1,14 +1,52 @@
 import Logo from "@/components/Logo";
 import { router } from "expo-router";
+import { useState } from "react";
 import {
+    Alert,
+    Pressable,
     StyleSheet,
     Text,
+    TextInput,
     TouchableOpacity,
     View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+const userData = {
+    phone: "11991251903",
+    password: "Thiago@123"
+}
+
 export default function Login() {
+
+    const [phone, setPhone] = useState("");
+    const [password, setPassword] = useState("");
+    const [focusedInput, setFocusedInput] = useState("");
+
+    function formatPhone(value: string) {
+        const numbers = value.replace(/\D/g, "").slice(0, 11);
+
+        if (numbers.length <= 2) {
+            return numbers;
+        }
+
+        if (numbers.length <= 7) {
+            return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+        }
+
+        return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7)}`;
+    }
+
+    function login() {
+        if (
+            phone === userData.phone &&
+            password === userData.password
+        ) router.push("/home");
+        else {
+            Alert.alert("Telefone ou Senha Incorreto.")
+        }
+    } 
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.content}>
@@ -18,35 +56,58 @@ export default function Login() {
                     showSubtitle = {false}
                 />
 
-                <TouchableOpacity
-                    style={styles.primaryButton}
-                    onPress={() => router.push("/(auth)/login")}
-                >
-                    <Text style={styles.primaryText}>Entrar</Text>
-                </TouchableOpacity>
+                <Text style={styles.title}>
+                    Login
+                </Text>
 
-                <TouchableOpacity
-                    style={styles.secondaryButton}
-                    onPress={() => router.push("/(auth)/register")}
-                >
-                    <Text style={styles.secondaryText}>Criar conta</Text>
-                </TouchableOpacity>
+                <View style={styles.wrapperInput}>
+                    <TextInput
+                        style={[
+                            styles.input,
+                            focusedInput === "phone" && styles.inputFocused,
+                        ]}
+                        placeholder="Telefone"
+                        keyboardType={"phone-pad"}
+                        value={formatPhone(phone)}
+                        onChangeText={(text) => {
+                            let value = text;
 
-                <TouchableOpacity
-                    style={styles.googleButton}
-                    onPress={() => {
-                        // Login Google futuramente
-                    }}
-                >
-                    <Text style={styles.googleText}>
-                        Continuar com Google
+                            value = text.replace(/\D/g, "").slice(0, 11);
+
+                            setPhone(value);
+                        }}
+                        onFocus={() => setFocusedInput("phone")}
+                        onBlur={() => setFocusedInput("")}
+                    />
+
+                    <TextInput
+                        style={[
+                            styles.input,
+                            focusedInput === "password" && styles.inputFocused,
+                        ]}
+                        secureTextEntry={true}
+
+                        placeholder="Senha"
+                        keyboardType={"default"}
+                        value={password}
+                        onChangeText={(it) => setPassword(it)}
+                        onFocus={() => setFocusedInput("password")}
+                        onBlur={() => setFocusedInput("")}
+                    />
+                </View>
+
+                <Pressable style={styles.button} onPress={() => login()}>
+                    <Text style={styles.textButton}>
+                        Entrar
                     </Text>
-                </TouchableOpacity>
+                </Pressable>
 
             </View>
         </SafeAreaView>
     );
 }
+
+const PRIMARY = "#ff6b00";
 
 const styles = StyleSheet.create({
     container: {
@@ -58,30 +119,36 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         paddingHorizontal: 30,
-    },
-
-    logo: {
-        fontSize: 70,
-        textAlign: "center",
-        marginBottom: 20,
+        paddingBottom: 136
     },
 
     title: {
         fontSize: 34,
         fontWeight: "700",
         textAlign: "center",
+        marginVertical: 20,
     },
 
-    subtitle: {
-        textAlign: "center",
-        color: "#666",
-        marginTop: 10,
-        marginBottom: 50,
-        fontSize: 16,
+    wrapperInput: {
+        gap: 16,
+    },
+
+    input: {
+        borderWidth: 1,
+        borderColor: "#DDD",
+        borderRadius: 14,
+        paddingHorizontal: 18,
+        height: 58,
+        fontSize: 18,
+    },
+
+    inputFocused: {
+        borderColor: PRIMARY,
+        borderWidth: 2
     },
 
     primaryButton: {
-        backgroundColor: "#ff6b00",
+        backgroundColor: PRIMARY,
         height: 55,
         borderRadius: 14,
         justifyContent: "center",
@@ -95,32 +162,18 @@ const styles = StyleSheet.create({
         fontSize: 17,
     },
 
-    secondaryButton: {
-        borderWidth: 1,
-        borderColor: "#ff6b00",
-        height: 55,
-        borderRadius: 14,
-        justifyContent: "center",
+    button: {
+        backgroundColor: PRIMARY,
+        paddingVertical: 14,
+        borderRadius: 12,
         alignItems: "center",
-        marginBottom: 15,
+        marginTop: 20,
     },
 
-    secondaryText: {
-        color: "#ff6b00",
+    textButton: {
+        color: "#FFF",
         fontWeight: "700",
-        fontSize: 17,
+        fontSize: 18
     },
 
-    googleButton: {
-        height: 55,
-        borderRadius: 14,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#F2F2F2",
-    },
-
-    googleText: {
-        fontSize: 16,
-        fontWeight: "600",
-    },
 });
