@@ -1,26 +1,18 @@
+import Logo from "@/components/Logo";
 import { router } from "expo-router";
 import {
-    SafeAreaView,
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.content}>
-
-                <Text style={styles.logo}>🤝</Text>
-
-                <Text style={styles.title}>
-                    Camarada
-                </Text>
-
-                <Text style={styles.subtitle}>
-                    Encontre profissionais ou ofereça seus serviços.
-                </Text>
+                <Logo />
 
                 <TouchableOpacity
                     style={styles.primaryButton}

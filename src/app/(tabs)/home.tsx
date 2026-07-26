@@ -4,21 +4,20 @@ export default function HomeScreen() {
     return (
         <ScrollView
             style={styles.container}
-            contentContainerStyle={{ padding: 20 }}
+            // contentContainerStyle={{ padding: 30 }}
             showsVerticalScrollIndicator={false}
         >
-            {/* Cabeçalho */}
-            <Text style={styles.greeting}>Bom dia, Thiago 👋</Text>
+
+            <View style={styles.header}>
+                <Text>
+                    Thiago
+                </Text>
+
+            </View>
 
             {/* Perfil */}
             <View style={styles.card}>
-                <Text style={styles.title}>Seu perfil</Text>
-
-                <Text style={styles.online}>
-
-                    🟢 Online
-                
-                </Text>
+             
 
                 <Text style={styles.rating}>★★★★★ 4.9</Text>
 
@@ -101,6 +100,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#F5F5F5",
+    },
+
+    header: {
+        backgroundColor: "#FF6B00",
+        padding: 30
     },
 
     greeting: {
@@ -244,3 +248,13 @@ const styles = StyleSheet.create({
         color: "#614f1d"
     }
 });
+
+// 🟧 Primária	Laranja	#FF6B00
+// 🟨 Secundária	Dourado	#D4AF37
+// 🟫 Escura	Marrom	#5E4B1F
+// 🟩 Sucesso	Verde	#22C55E
+// 🔴 Erro	Vermelho	#EF4444
+// ⚪ Fundo	Branco	#FFFFFF
+// ⚪ Fundo da tela	Cinza claro	#F8F8F8
+// ⚫ Texto	Quase preto	#1F2937
+// ⚪ Texto secundário	Cinza	#6B7280
