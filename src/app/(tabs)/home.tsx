@@ -1,6 +1,13 @@
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function HomeScreen() {
+
+    function goToOpportunities() {
+        // router.push("/opportunities");
+    }
+
     return (
         <ScrollView
             style={styles.container}
@@ -9,51 +16,23 @@ export default function HomeScreen() {
         >
 
             <View style={styles.header}>
-                <Text>
-                    Thiago
+                <Text style={styles.title}>
+                    Thiago Vieira
                 </Text>
-
-            </View>
-
-            {/* Perfil */}
-            <View style={styles.card}>
-             
-
-                <Text style={styles.rating}>★★★★★ 4.9</Text>
-
-                <View style={styles.divider} />
-
-                <Text style={styles.subtitle}>Esta semana</Text>
-
-                <View style={styles.statRow}>
-                    <Text style={styles.stat}>👁️ 82 visualizações</Text>
-                </View>
-
-                <View style={styles.statRow}>
-                    <Text style={styles.stat}>💬 7 contatos</Text>
-                </View>
-
-                <View style={styles.statRow}>
-                    <Text style={styles.stat}>⭐ 2 novas avaliações</Text>
-                </View>
-
-                <View style={styles.containerButtons}>
-                    <Pressable style={[styles.button, styles.buttonProfileEdit]}>
-                        <Text style={styles.buttonText}>Editar perfil</Text>
-                    </Pressable>
-
-                    <Pressable style={[styles.button, styles.buttonProfileEditPlus]}>
-                        <Text style={[styles.buttonText, styles.buttonTextPlus]}>Turbine seu perfil</Text>
-                    </Pressable>
-                </View>
+                <Pressable style={styles.notificationButton}>
+                    <Ionicons name="notifications" size={24} style={styles.notificationIcon}/>
+                    <View style={styles.notificationQuantity}>1</View>
+                </Pressable>
             </View>
 
             {/* Oportunidades */}
-            <View style={styles.card}>
+            <Pressable style={styles.card} onPress={() => goToOpportunities()}>
                 <Text style={styles.title}>🔥 Oportunidades perto de você</Text>
 
                 <Text style={styles.requests}>12 novos pedidos</Text>
-            </View>
+
+                <Ionicons name="arrow-forward" size={28} style={styles.arrowIcon}/>
+            </Pressable>
 
             {/* Pedido 1 */}
             <View style={styles.jobCard}>
@@ -103,15 +82,43 @@ const styles = StyleSheet.create({
     },
 
     header: {
-        backgroundColor: "#FF6B00",
-        padding: 30
+        // backgroundColor: "#ff6a00",
+        padding: 30,
+        paddingTop: 45,
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
 
-    greeting: {
-        fontSize: 28,
+    notificationButton: {
+        position: "relative"
+    },
+
+    notificationIcon: {
+        // color: "#fff"
+    },
+
+    notificationQuantity: {
+        position: "absolute",
+        justifyContent: "center",
+        alignItems: "center",
+        right: -8,
+        top: -6,
+        
+        backgroundColor: "#ff0000",
+        color: "#fff",
+        
+        width: 20,
+        aspectRatio: 1/1,
+        borderRadius: 10, 
+        
+        fontSize: 14,
+        fontWeight: "800",
+    },
+
+    title: {
+        fontSize: 22,
         fontWeight: "700",
-        marginBottom: 20,
-        color: "#111",
+        color: "#000",
     },
 
     card: {
@@ -120,12 +127,15 @@ const styles = StyleSheet.create({
         padding: 20,
         marginBottom: 18,
         elevation: 3,
+        position: "relative"
     },
 
-    title: {
-        fontSize: 22,
-        fontWeight: "700",
-        color: "#111",
+    arrowIcon: {
+        position: "absolute",
+        right: 24,
+        top: "50%",
+        transform: [{ translateY: "-50%" }],
+        color: PRIMARY
     },
 
     online: {
@@ -137,7 +147,7 @@ const styles = StyleSheet.create({
 
     rating: {
         fontSize: 24,
-        marginTop: 12,
+        // marginTop: 12,
         color: "#F7B500",
         fontWeight: "700",
     },
@@ -245,7 +255,7 @@ const styles = StyleSheet.create({
     },
 
     buttonTextPlus: {
-        color: "#614f1d"
+        color: "#FFFFFF"
     }
 });
 

@@ -22,7 +22,7 @@ export default function TabsLayout() {
             <Tabs.Screen name="chat" />
             <Tabs.Screen name="service" />
             <Tabs.Screen name="earnings" />
-            <Tabs.Screen name="profile" />
+            
             <Tabs.Screen 
                 name="opportunities" 
                 options={{
@@ -31,6 +31,16 @@ export default function TabsLayout() {
                         <Ionicons name="home" size={size} color={color} />
                     }
                 }}
+            />
+
+            <Tabs.Screen 
+                name="profile"
+                options={{
+                    title: "Perfil",
+                    tabBarIcon: ({ color, size }) => {
+                        <Ionicons name="person" size={size} color={color} />
+                    }
+                }}    
             />
         </Tabs>
     );
