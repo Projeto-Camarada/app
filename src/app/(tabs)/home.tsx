@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function HomeScreen() {
 
@@ -36,9 +36,23 @@ export default function HomeScreen() {
 
             {/* Pedido 1 */}
             <View style={styles.jobCard}>
-                <Text style={styles.jobTitle}>🏠 Construção de muro</Text>
+                <Text style={styles.jobTitle}>Construção de muro</Text>
+                <Image 
+                    source={require("@/assets/images/job.png")}
+                    style={styles.jobImage}
+                />
 
-                <Text style={styles.jobInfo}>📍 2,1 km</Text>
+                <Text style={styles.jobInfo}>
+                    📍 2,1 km
+                </Text>
+
+                <Text style={styles.jobInfo}>
+                    Avenida Americanas 346, São Paulo - SP
+                </Text>
+
+                <Text style={styles.jobInfo}>
+                    Preciso de um pedreiro com experiencia, URGENTE!!
+                </Text>
 
                 <Text style={styles.price}>R$ 1.500</Text>
 
@@ -78,13 +92,14 @@ const PRIMARY = "#FF6B00";
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#F5F5F5",
+        backgroundColor: "#e69d3f",
+        padding: 8
     },
 
     header: {
         // backgroundColor: "#ff6a00",
         padding: 30,
-        paddingTop: 45,
+        // paddingTop: 45,
         flexDirection: "row",
         justifyContent: "space-between",
     },
@@ -195,7 +210,7 @@ const styles = StyleSheet.create({
     },
 
     jobCard: {
-        backgroundColor: "#FFF",
+        backgroundColor: "#fff",
         borderRadius: 18,
         padding: 20,
         marginBottom: 18,
@@ -205,7 +220,7 @@ const styles = StyleSheet.create({
     jobTitle: {
         fontSize: 22,
         fontWeight: "700",
-        color: "#111",
+        color: "#000000",
     },
 
     jobInfo: {
@@ -256,8 +271,16 @@ const styles = StyleSheet.create({
 
     buttonTextPlus: {
         color: "#FFFFFF"
+    },
+
+    jobImage: {
+        width: "auto",
+        height: 180,
     }
 });
+
+    // #e69d3f
+    // branco e preto
 
 // 🟧 Primária	Laranja	#FF6B00
 // 🟨 Secundária	Dourado	#D4AF37

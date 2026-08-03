@@ -19,9 +19,6 @@ export default function TabsLayout() {
                     }
                 }}
             />
-            <Tabs.Screen name="chat" />
-            <Tabs.Screen name="service" />
-            <Tabs.Screen name="earnings" />
             
             <Tabs.Screen 
                 name="opportunities" 
@@ -32,7 +29,20 @@ export default function TabsLayout() {
                     }
                 }}
             />
+            
+            <Tabs.Screen 
+                name="chat"
+                options={{
+                    title: "Chat",
+                    tabBarIcon: ({ color, size }) => {
+                        <Ionicons name="chatbox" size={size} color={color} />
+                    }
+                }}
+            />
 
+            <Tabs.Screen name="service" />
+            <Tabs.Screen name="earnings" />
+            
             <Tabs.Screen 
                 name="profile"
                 options={{
