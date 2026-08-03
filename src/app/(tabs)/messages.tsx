@@ -1,5 +1,10 @@
+import { Colors } from "@/constants/theme";
 import { router } from "expo-router";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, useColorScheme, View } from "react-native";
+
+
+const colorScheme = useColorScheme() ?? "light";
+const colors = Colors[colorScheme];
 
 const chats = [
     {
@@ -28,6 +33,8 @@ const chats = [
     },
 ];
 
+
+
 export default function Messages() {
 
     function sendToChat(id: string) {
@@ -40,97 +47,118 @@ export default function Messages() {
     return (
         <View style={styles.container}>
 
-            <Text style={styles.title}>
-                Conversas
-            </Text>
+            <View style={styles.header}>
+                <Text style={styles.title}>
+                    Conversas
+                </Text>
+            </View>
 
-            <FlatList
-                data={chats}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <Pressable style={styles.chatCard} onPress={() => sendToChat(item.id)}>
+            <View style={styles.containerChat}>
 
-                        <View style={styles.avatar}>
-                            <Text style={styles.avatarText}>
-                                {item.name[0]}
-                            </Text>
-                        </View>
+                <FlatList
+                    data={chats}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <Pressable style={styles.chatCard} onPress={() => sendToChat(item.id)}>
 
-                        <View style={styles.content}>
-
-                            <View style={styles.row}>
-                                <Text style={styles.name}>
-                                    {item.name}
-                                </Text>
-
-                                <Text style={styles.time}>
-                                    {item.time}
+                            <View style={styles.avatar}>
+                                <Text style={styles.avatarText}>
+                                    {item.name[0]}
                                 </Text>
                             </View>
 
-                            <Text style={styles.service}>
-                                {item.service}
-                            </Text>
+                            <View style={styles.content}>
 
-                            <View style={styles.row}>
-                                <Text
-                                    numberOfLines={1}
-                                    style={styles.message}
-                                >
-                                    {item.lastMessage}
+                                <View style={styles.row}>
+                                    <Text style={styles.name}>
+                                        {item.name}
+                                    </Text>
+
+                                    <Text style={styles.time}>
+                                        {item.time}
+                                    </Text>
+                                </View>
+
+                                <Text style={styles.service}>
+                                    {item.service}
                                 </Text>
 
-                                {item.unread && (
-                                    <View style={styles.badge} />
-                                )}
+                                <View style={styles.row}>
+                                    <Text
+                                        numberOfLines={1}
+                                        style={styles.message}
+                                    >
+                                        {item.lastMessage}
+                                    </Text>
+
+                                    {item.unread && (
+                                        <View style={styles.badge} />
+                                    )}
+                                </View>
+
                             </View>
 
-                        </View>
-
-                    </Pressable>
-                )}
-            />
+                        </Pressable>
+                    )}
+                />
+            </View>
 
         </View>
     );
 }
 
-const PRIMARY = "#FF6B00";
-
 const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: "#F5F5F5",
-        padding: 16,
+        backgroundColor: colors.background,
+    },
+
+    header: {
+        backgroundColor: colors.premium,
+        padding: 16
     },
 
     title: {
         fontSize: 30,
         fontWeight: "700",
-        marginBottom: 20,
+        color: colors.text
+    },
+
+    containerChat: {
+        padding: 16
     },
 
     chatCard: {
         flexDirection: "row",
-        backgroundColor: "#FFF",
+        backgroundColor: colors.card,
         borderRadius: 16,
         padding: 16,
         marginBottom: 14,
         alignItems: "center",
+
+        elevation: 5,        
+
+        shadowColor: "#E69D3F",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 6
     },
 
     avatar: {
         width: 60,
         height: 60,
         borderRadius: 30,
-        backgroundColor: PRIMARY,
+        backgroundColor: colors.primary,
         justifyContent: "center",
         alignItems: "center",
     },
 
     avatarText: {
-        color: "#FFF",
+        color: colors.text,
         fontSize: 24,
         fontWeight: "700",
     },
@@ -149,17 +177,18 @@ const styles = StyleSheet.create({
     name: {
         fontSize: 18,
         fontWeight: "700",
+        color: colors.text  
     },
 
     service: {
         marginTop: 4,
-        color: PRIMARY,
+        color: colors.primary,
         fontWeight: "600",
     },
 
     message: {
         flex: 1,
-        color: "#666",
+        color: colors.textSecondary,
         marginTop: 8,
         marginRight: 10,
     },

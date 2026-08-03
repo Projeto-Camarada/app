@@ -1,6 +1,10 @@
+import { Colors } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+
+const colorScheme = useColorScheme() ?? "light";
+const colors = Colors[colorScheme];
 
 export default function HomeScreen() {
 
@@ -278,16 +282,3 @@ const styles = StyleSheet.create({
         height: 180,
     }
 });
-
-    // #e69d3f
-    // branco e preto
-
-// 🟧 Primária	Laranja	#FF6B00
-// 🟨 Secundária	Dourado	#D4AF37
-// 🟫 Escura	Marrom	#5E4B1F
-// 🟩 Sucesso	Verde	#22C55E
-// 🔴 Erro	Vermelho	#EF4444
-// ⚪ Fundo	Branco	#FFFFFF
-// ⚪ Fundo da tela	Cinza claro	#F8F8F8
-// ⚫ Texto	Quase preto	#1F2937
-// ⚪ Texto secundário	Cinza	#6B7280

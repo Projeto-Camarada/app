@@ -1,24 +1,36 @@
+import { Colors } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { FlatList, Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { FlatList, Image, Pressable, StyleSheet, Text, TextInput, useColorScheme, View } from "react-native";
 
-const messages = [
-    {
-        id: "1",
-        text: "Olá! Você consegue começar hoje?",
-        mine: false,
-    },
-    {
-        id: "2",
-        text: "Sim, consigo.",
-        mine: true
-    }
-]
+
+const colorScheme = useColorScheme() ?? "light";
+const colors = Colors[colorScheme];
+
+
 
 
 export default function Chat() {
 
     const { id } = useLocalSearchParams<{ id: string }>();
+    const [idMessage, setIdMessage] = useState(2);
+    const flatListRef = useRef<FlatList>(null);
+
+    const [messages, setMessages] = useState([
+        {
+            id: "1",
+            text: "Olá! Você consegue começar hoje?",
+            mine: false,
+        },
+        {
+            id: "2",
+            text: "Sim, consigo.",
+            mine: true
+        }
+    ]);
+
+    const [message, setMessage] = useState("");
 
     console.log(id);
 
@@ -26,38 +38,82 @@ export default function Chat() {
         router.back();
     }
 
+    function sendMessage(message: string) {
+
+        if (!message.trim()) return;
+
+        setMessages(prev => [
+            ...prev,
+            {
+                id: idMessage.toString(),
+                text: message,
+                mine: true 
+            }
+        ]);
+
+        setIdMessage(prev => prev++);
+
+        setMessage("");
+    }
+
+    useEffect(() => {
+        flatListRef.current?.scrollToEnd({ animated: true });
+    }, [messages]);
+
     return (
         <View style={styles.container}>
+            
             <View style={styles.header}>
-                <Pressable onPress={() => goBack()}>
-                    <Ionicons name="arrow-back" size={24} color={"#fff"}/>
+            
+                <Pressable style={styles.backButton} onPress={() => goBack()}>
+                    <Ionicons name="arrow-back" size={28} color={"#fff"}/>
                 </Pressable>
-                <Image />
-                <Text>Pessoa</Text>
+            
+                <Pressable style={styles.profileButton}>
+                    <Image 
+                        source={require("@/assets/images/job.png")}
+                        style={styles.profileImage}
+                        resizeMode="cover"
+                    />
+                
+                    <Text style={styles.titleProfile}>Pessoa</Text>
+                </Pressable>
             </View>
-            <FlatList 
-                data={messages}
-                renderItem={({ item }) => (
-                    <View
-                        style={[
-                            styles.message,
-                            item.mine
-                                ? styles.myMessage
-                                : styles.otherMessage,
-                        ]}
-                    >
-                        <Text>{item.text}</Text>
-                    </View>
-                )}
-            />
+
+            <View style={styles.containerChat}>
+
+                <FlatList 
+                    ref={flatListRef}
+                    data={messages}
+                    renderItem={({ item }) => (
+                        <View
+                            style={[
+                                styles.message,
+                                item.mine
+                                    ? styles.myMessage
+                                    : styles.otherMessage,
+                            ]}
+                        >
+                            <Text>{item.text}</Text>
+                        </View>
+                    )}
+                />
+
+            </View>
 
             <View style={styles.footer}>
                 <TextInput 
                     style={styles.input}
                     placeholder="Digite uma mensagem..."
+                    value={message}
+                    onChangeText={(it) => setMessage(it)}
+                    onSubmitEditing={() => sendMessage(message)}
+                    returnKeyType="send"
                 />
                 
-                <Pressable style={styles.sendButton}>
+                <Pressable 
+                    style={styles.sendButton} 
+                    onPress={() => sendMessage(message)}>
                     <Ionicons name="send"  size={22} color={"#ffff"}/>
                 </Pressable>
             </View>
@@ -73,10 +129,38 @@ const styles = StyleSheet.create({
 
     header: {
         height: 80,
-        backgroundColor: "#ff6b00",
+        backgroundColor: colors.primary,
         flexDirection: "row",
         alignItems: "center",
         padding: 12
+    },
+
+    backButton: {
+        marginRight: 20,
+    },
+
+    profileButton: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 14
+    },
+
+    profileImage: {
+        width: 50,
+        height: 50,
+        borderRadius: 50,
+        backgroundPosition: "center"
+    },
+
+    titleProfile: {
+        fontSize: 20,
+        fontWeight: "600",
+        color: colors.text
+    },
+
+    containerChat: {
+        padding: 8,
+        flex: 1
     },
 
     message: {
@@ -87,8 +171,9 @@ const styles = StyleSheet.create({
     },
 
     myMessage: {
-        backgroundColor: "#ff6b00",
-        alignSelf: "flex-end"
+        backgroundColor: colors.primary,
+        alignSelf: "flex-end",
+
     },
 
     otherMessage: {
