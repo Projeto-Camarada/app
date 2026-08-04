@@ -124,7 +124,8 @@ export default function Chat() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: colors.backgroundSelected
     },
 
     header: {
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
     footer: {
         flexDirection: "row",
         padding: 12,
-        backgroundColor: "#fff",
+        backgroundColor: colors.backgroundSelected,
     },
 
     input: {
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 24,
-        backgroundColor: "#FF6B00",
+        backgroundColor: colors.primary,
         justifyContent: "center",
         alignItems: "center",
         marginLeft: 10,

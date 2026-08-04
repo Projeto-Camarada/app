@@ -1,10 +1,34 @@
 import { Colors } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 const colorScheme = useColorScheme() ?? "light";
 const colors = Colors[colorScheme];
+
+const opportunities = [
+    {
+        id: "1",
+        title: "🏠 Construção de muro",
+        price: "R$ 1.500",
+        distance: "2,1 km",
+        date: "Hoje",
+    },
+    {
+        id: "2",
+        title: "🚿 Assentar porcelanato",
+        price: "R$ 900",
+        distance: "4 km",
+        date: "Amanhã",
+    },
+    {
+        id: "3",
+        title: "⚡ Instalação elétrica",
+        price: "R$ 650",
+        distance: "6 km",
+        date: "Hoje",
+    },
+];
 
 export default function HomeScreen() {
 
@@ -29,79 +53,72 @@ export default function HomeScreen() {
                 </Pressable>
             </View>
 
-            {/* Oportunidades */}
-            <Pressable style={styles.card} onPress={() => goToOpportunities()}>
-                <Text style={styles.title}>🔥 Oportunidades perto de você</Text>
+            <View style={styles.content}>
+                <Pressable style={[styles.card, styles.cardPremium]} onPress={() => goToOpportunities()}>
+                    <Text style={[styles.title, styles.titlePremium]}>🔥 Oportunidades para você</Text>
 
-                <Text style={styles.requests}>12 novos pedidos</Text>
+                    <Text style={[styles.requests, styles.infoPremium]}>Não perca</Text>
 
-                <Ionicons name="arrow-forward" size={28} style={styles.arrowIcon}/>
-            </Pressable>
+                    <Ionicons name="arrow-forward" size={28} style={styles.arrowIcon}/>
+                </Pressable>
 
-            {/* Pedido 1 */}
-            <View style={styles.jobCard}>
-                <Text style={styles.jobTitle}>Construção de muro</Text>
-                <Image 
-                    source={require("@/assets/images/job.png")}
-                    style={styles.jobImage}
+                <FlatList
+                    data={opportunities}
+                    keyExtractor={(item) => item.id}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={({ item }) => (
+                        <View style={styles.card}>
+                            <Text style={styles.jobTitle}>{item.title}</Text>
+                            <Image 
+                                source={require("@/assets/images/job.png")}
+                                style={styles.jobImage}
+                            />
+
+                            <Text style={styles.jobInfo}>
+                                {item.distance}
+                            </Text>
+
+                            <Text style={styles.jobInfo}>
+                                Avenida Americanas 346, São Paulo - SP
+                            </Text>
+
+                            <Text style={styles.jobInfo}>
+                                Preciso de um pedreiro com experiencia, URGENTE!!
+                            </Text>
+
+                            <Text style={styles.price}>{item.price}</Text>
+
+                            <Text style={styles.date}>{item.date}</Text>
+
+                            <View style={styles.buttons}>
+                                <Pressable style={styles.cancelButton}>
+                                    <Text style={styles.cancelText}>
+                                        Não tenho interesse
+                                    </Text>
+                                </Pressable>
+
+                                <Pressable style={styles.interestButton}>
+                                    <Text style={styles.interestText}>
+                                        Tenho interesse
+                                    </Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    )}
                 />
-
-                <Text style={styles.jobInfo}>
-                    📍 2,1 km
-                </Text>
-
-                <Text style={styles.jobInfo}>
-                    Avenida Americanas 346, São Paulo - SP
-                </Text>
-
-                <Text style={styles.jobInfo}>
-                    Preciso de um pedreiro com experiencia, URGENTE!!
-                </Text>
-
-                <Text style={styles.price}>R$ 1.500</Text>
-
-                <Text style={styles.date}>Hoje</Text>
-
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>Ver pedido</Text>
-                </TouchableOpacity>
             </View>
-
-            {/* Pedido 2 */}
-            <View style={styles.jobCard}>
-                <Text style={styles.jobTitle}>🚿 Assentar porcelanato</Text>
-
-                <Text style={styles.jobInfo}>📍 4 km</Text>
-
-                <Text style={styles.price}>R$ 900</Text>
-
-                <Text style={styles.date}>Amanhã</Text>
-
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>Ver pedido</Text>
-                </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity>
-                <Text style={styles.all}>
-                    Ver todas as oportunidades →
-                </Text>
-            </TouchableOpacity>
         </ScrollView>
     );
 }
 
-const PRIMARY = "#FF6B00";
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#e69d3f",
-        padding: 8
+        backgroundColor: colors.backgroundSelected,
     },
 
     header: {
-        // backgroundColor: "#ff6a00",
+        backgroundColor: colors.primary,
         padding: 30,
         // paddingTop: 45,
         flexDirection: "row",
@@ -140,11 +157,27 @@ const styles = StyleSheet.create({
         color: "#000",
     },
 
+    titlePremium: {
+        color: colors.background
+    },
+
+    infoPremium: {
+        color: colors.background
+    },
+
+    content: {
+        paddingHorizontal: 16
+    },
+
+    cardPremium: {
+        backgroundColor: colors.premium,
+    },
+
     card: {
-        backgroundColor: "#FFF",
+        backgroundColor: colors.card,
         borderRadius: 18,
         padding: 20,
-        marginBottom: 18,
+        marginVertical: 18,
         elevation: 3,
         position: "relative"
     },
@@ -154,46 +187,11 @@ const styles = StyleSheet.create({
         right: 24,
         top: "50%",
         transform: [{ translateY: "-50%" }],
-        color: PRIMARY
-    },
-
-    online: {
-        fontSize: 18,
-        marginTop: 12,
-        color: "#22A447",
-        fontWeight: "600",
-    },
-
-    rating: {
-        fontSize: 24,
-        // marginTop: 12,
-        color: "#F7B500",
-        fontWeight: "700",
-    },
-
-    divider: {
-        height: 1,
-        backgroundColor: "#E5E5E5",
-        marginVertical: 18,
-    },
-
-    subtitle: {
-        fontSize: 20,
-        fontWeight: "700",
-        marginBottom: 12,
-    },
-
-    statRow: {
-        marginBottom: 10,
-    },
-
-    stat: {
-        fontSize: 18,
-        color: "#444",
+        color: colors.background
     },
 
     button: {
-        backgroundColor: PRIMARY,
+        backgroundColor: colors.primary,
         paddingVertical: 14,
         borderRadius: 12,
         alignItems: "center",
@@ -210,7 +208,7 @@ const styles = StyleSheet.create({
         marginTop: 15,
         fontSize: 26,
         fontWeight: "700",
-        color: PRIMARY,
+        color: colors.primary,
     },
 
     jobCard: {
@@ -224,33 +222,34 @@ const styles = StyleSheet.create({
     jobTitle: {
         fontSize: 22,
         fontWeight: "700",
-        color: "#000000",
+        color: colors.text,
+        marginBottom: 14
     },
 
     jobInfo: {
         marginTop: 12,
         fontSize: 18,
-        color: "#666",
+        color: colors.text,
     },
 
     price: {
         marginTop: 8,
         fontSize: 24,
-        color: "#22A447",
+        color: colors.success,
         fontWeight: "700",
     },
 
     date: {
         marginTop: 8,
         fontSize: 18,
-        color: "#555",
+        color: colors.text,
     },
 
     all: {
         textAlign: "center",
         fontSize: 18,
         fontWeight: "700",
-        color: PRIMARY,
+        color: colors.primary,
         marginVertical: 25,
     },
 
@@ -263,22 +262,46 @@ const styles = StyleSheet.create({
     buttonProfileEdit: {
         flex: 1,
         alignItems: "center",
-        backgroundColor: PRIMARY
-    },
-
-    buttonProfileEditPlus: {
-        flex: 1,
-        backgroundColor: "#d1a71c",
-        borderWidth: 1,
-        borderColor: "#614f1d"
-    },
-
-    buttonTextPlus: {
-        color: "#FFFFFF"
+        backgroundColor: colors.primary
     },
 
     jobImage: {
         width: "auto",
         height: 180,
-    }
+    },
+
+    buttons: {
+        flexDirection: "row",
+        gap: 10,
+        marginTop: 20,
+    },
+
+    cancelButton: {
+        flex: 1,
+        paddingVertical: 14,
+        borderRadius: 10,
+        backgroundColor: colors.text,
+        alignItems: "center",
+    },
+
+    interestButton: {
+        flex: 1,
+        paddingVertical: 14,
+        borderRadius: 10,
+        backgroundColor: colors.primary,
+        alignItems: "center",
+    },
+
+    cancelText: {
+        fontWeight: "600",
+        fontSize: 16,
+        color: colors.background,
+    },
+
+    interestText: {
+        fontWeight: "700",
+        fontSize: 18,
+        color: colors.background,
+    },
+
 });

@@ -111,11 +111,11 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: colors.background,
+        backgroundColor: colors.backgroundSelected,
     },
 
     header: {
-        backgroundColor: colors.premium,
+        backgroundColor: colors.primary,
         padding: 16
     },
 

@@ -12,7 +12,7 @@ export const DefaultTheme: Theme = {
         background: "#F2F2F2",
         card: "#F2F2F2",
         text: "#111827",
-        border: "#ff6b00",
+        border: "#ff6b0000",
         notification: "#ff6b00",
     },
 };
