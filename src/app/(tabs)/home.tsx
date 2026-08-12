@@ -3,9 +3,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
-const colorScheme = useColorScheme() ?? "light";
-const colors = Colors[colorScheme];
-
 const opportunities = [
     {
         id: "1",
@@ -32,89 +29,101 @@ const opportunities = [
 
 export default function HomeScreen() {
 
+    const colorScheme = useColorScheme() ?? "light";
+    const colors = Colors[colorScheme];
+
+    const styles = createStyles(colors);
+
     function goToOpportunities() {
         // router.push("/opportunities");
     }
 
     return (
-        <ScrollView
-            style={styles.container}
-            // contentContainerStyle={{ padding: 30 }}
+        <FlatList
+            data={opportunities}
+            keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
-        >
 
-            <View style={styles.header}>
-                <Text style={styles.title}>
-                    Thiago Vieira
-                </Text>
-                <Pressable style={styles.notificationButton}>
-                    <Ionicons name="notifications" size={24} style={styles.notificationIcon}/>
-                    <View style={styles.notificationQuantity}>1</View>
-                </Pressable>
-            </View>
+            style={styles.container}
 
-            <View style={styles.content}>
-                <Pressable style={[styles.card, styles.cardPremium]} onPress={() => goToOpportunities()}>
-                    <Text style={[styles.title, styles.titlePremium]}>🔥 Oportunidades para você</Text>
+            contentContainerStyle={styles.contentFlat}
 
-                    <Text style={[styles.requests, styles.infoPremium]}>Não perca</Text>
-
-                    <Ionicons name="arrow-forward" size={28} style={styles.arrowIcon}/>
-                </Pressable>
-
-                <FlatList
-                    data={opportunities}
-                    keyExtractor={(item) => item.id}
-                    showsVerticalScrollIndicator={false}
-                    renderItem={({ item }) => (
-                        <View style={styles.card}>
-                            <Text style={styles.jobTitle}>{item.title}</Text>
-                            <Image 
-                                source={require("@/assets/images/job.png")}
-                                style={styles.jobImage}
-                            />
-
-                            <Text style={styles.jobInfo}>
-                                {item.distance}
-                            </Text>
-
-                            <Text style={styles.jobInfo}>
-                                Avenida Americanas 346, São Paulo - SP
-                            </Text>
-
-                            <Text style={styles.jobInfo}>
-                                Preciso de um pedreiro com experiencia, URGENTE!!
-                            </Text>
-
-                            <Text style={styles.price}>{item.price}</Text>
-
-                            <Text style={styles.date}>{item.date}</Text>
-
-                            <View style={styles.buttons}>
-                                <Pressable style={styles.cancelButton}>
-                                    <Text style={styles.cancelText}>
-                                        Não tenho interesse
-                                    </Text>
-                                </Pressable>
-
-                                <Pressable style={styles.interestButton}>
-                                    <Text style={styles.interestText}>
-                                        Tenho interesse
-                                    </Text>
-                                </Pressable>
+            ListHeaderComponent={
+                <>
+                    <View style={styles.header}>
+                        <Text style={styles.title}>Thiago Vieira</Text>
+                        <Pressable style={styles.notificationButton}>
+                            <Ionicons name="notifications" size={24} style={styles.notificationIcon}/>
+                            <View style={styles.notificationQuantity}>
+                                <Text style={styles.notificationQuantityText}>
+                                    1
+                                </Text>
                             </View>
-                        </View>
-                    )}
-                />
-            </View>
-        </ScrollView>
+                        </Pressable>
+                    </View>
+
+                    <Pressable style={[styles.card, styles.cardPremium]} onPress={() => goToOpportunities()}>
+                        <Text style={[styles.title, styles.titlePremium]}>🔥 Oportunidades para você</Text>
+
+                        <Text style={[styles.requests, styles.infoPremium]}>Não perca</Text>
+
+                        <Ionicons name="arrow-forward" size={28} style={styles.arrowIcon}/>
+                    </Pressable>
+
+                </>
+            }
+
+            renderItem={({ item }) => (
+                <View style={styles.card}>
+                    <Text style={styles.jobTitle}>{item.title}</Text>
+                    <Image 
+                        source={require("@/assets/images/job.png")}
+                        style={styles.jobImage}
+                        resizeMode="cover"
+                    />
+
+                    <Text style={styles.jobInfo}>
+                        {item.distance}
+                    </Text>
+
+                    <Text style={styles.jobInfo}>
+                        Avenida Americanas 346, São Paulo - SP
+                    </Text>
+
+                    <Text style={styles.jobInfo}>
+                        Preciso de um pedreiro com experiencia, URGENTE!!
+                    </Text>
+
+                    <Text style={styles.price}>{item.price}</Text>
+
+                    <Text style={styles.date}>{item.date}</Text>
+
+                    <View style={styles.buttons}>
+                        <Pressable style={styles.cancelButton}>
+                            <Text style={styles.cancelText}>
+                                Não tenho interesse
+                            </Text>
+                        </Pressable>
+
+                        <Pressable style={styles.interestButton}>
+                            <Text style={styles.interestText}>
+                                Tenho interesse
+                            </Text>
+                        </Pressable>
+                    </View>
+                </View>
+            )}
+        />
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors["dark" | "light"]) =>  StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.backgroundSelected,
+    },
+
+    contentFlat: {
     },
 
     header: {
@@ -141,12 +150,14 @@ const styles = StyleSheet.create({
         top: -6,
         
         backgroundColor: "#ff0000",
-        color: "#fff",
         
         width: 20,
         aspectRatio: 1/1,
         borderRadius: 10, 
-        
+    },
+    
+    notificationQuantityText: {
+        color: "#fff",
         fontSize: 14,
         fontWeight: "800",
     },
@@ -179,14 +190,15 @@ const styles = StyleSheet.create({
         padding: 20,
         marginVertical: 18,
         elevation: 3,
-        position: "relative"
+        position: "relative",
+        marginHorizontal: 8
     },
 
     arrowIcon: {
         position: "absolute",
         right: 24,
         top: "50%",
-        transform: [{ translateY: "-50%" }],
+        transform: [{ translateY: -14 }],
         color: colors.background
     },
 
@@ -266,8 +278,9 @@ const styles = StyleSheet.create({
     },
 
     jobImage: {
-        width: "auto",
+        width: "100%",
         height: 180,
+        borderRadius: 12,
     },
 
     buttons: {

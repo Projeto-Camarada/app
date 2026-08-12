@@ -1,6 +1,8 @@
+import EyeButton from "@/components/EyeButton";
 import Logo from "@/components/Logo";
 import { router } from "expo-router";
 import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
     Alert,
     Pressable,
@@ -21,6 +23,7 @@ export default function Login() {
 
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
+    const [hidePassword, setHidePassword] = useState(true);
     const [focusedInput, setFocusedInput] = useState("");
 
     function formatPhone(value: string) {
@@ -37,14 +40,18 @@ export default function Login() {
         return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7)}`;
     }
 
-    function login() {
+    async function login() {
         if (
-            phone === userData.phone &&
-            password === userData.password
-        ) router.push("/home");
-        else {
-            Alert.alert("Telefone ou Senha Incorreto.")
+            phone !== userData.phone ||
+            password !== userData.password
+        ) {
+            Alert.alert("Telefone ou Senha Incorreto.");
+            return;
         }
+
+        await AsyncStorage.setItem("isLoggedIn", "true");
+
+        router.replace("/home");
     } 
 
     return (
@@ -61,39 +68,46 @@ export default function Login() {
                 </Text>
 
                 <View style={styles.wrapperInput}>
-                    <TextInput
-                        style={[
-                            styles.input,
-                            focusedInput === "phone" && styles.inputFocused,
-                        ]}
-                        placeholder="Telefone"
-                        keyboardType={"phone-pad"}
-                        value={formatPhone(phone)}
-                        onChangeText={(text) => {
-                            let value = text;
-
-                            value = text.replace(/\D/g, "").slice(0, 11);
-
-                            setPhone(value);
-                        }}
-                        onFocus={() => setFocusedInput("phone")}
-                        onBlur={() => setFocusedInput("")}
-                    />
-
-                    <TextInput
-                        style={[
-                            styles.input,
-                            focusedInput === "password" && styles.inputFocused,
-                        ]}
-                        secureTextEntry={true}
-
-                        placeholder="Senha"
-                        keyboardType={"default"}
-                        value={password}
-                        onChangeText={(it) => setPassword(it)}
-                        onFocus={() => setFocusedInput("password")}
-                        onBlur={() => setFocusedInput("")}
-                    />
+                    
+                    <View style={styles.containerInput}>
+                        <TextInput
+                            style={[
+                                styles.input,
+                                focusedInput === "phone" && styles.inputFocused,
+                            ]}
+                            placeholder="Telefone"
+                            keyboardType={"phone-pad"}
+                            value={formatPhone(phone)}
+                            onChangeText={(text) => {
+                                let value = text;
+                                value = text.replace(/\D/g, "").slice(0, 11);
+                                setPhone(value);
+                            }}
+                            onFocus={() => setFocusedInput("phone")}
+                            onBlur={() => setFocusedInput("")}
+                        />
+                    </View>
+                    <View style={styles.passwordContainer}>
+                        <TextInput
+                            style={[
+                                styles.input,
+                                focusedInput === "password" && styles.inputFocused,
+                            ]}
+                            secureTextEntry={hidePassword}
+    
+                            placeholder="Senha"
+                            keyboardType={"default"}
+                            value={password}
+                            onChangeText={(it) => setPassword(it)}
+                            onFocus={() => setFocusedInput("password")}
+                            onBlur={() => setFocusedInput("")}
+                        />
+    
+                        <EyeButton
+                            showText={setHidePassword}
+                            text={hidePassword}
+                        />
+                    </View>
                 </View>
 
                 <Pressable style={styles.button} onPress={() => login()}>
@@ -133,12 +147,23 @@ const styles = StyleSheet.create({
         gap: 16,
     },
 
+    containerInput: {
+        height: 58
+    },
+
+    passwordContainer: {
+        position: "relative",
+        flexDirection: "row",
+        alignItems: "center",
+    },
+
     input: {
         borderWidth: 1,
         borderColor: "#DDD",
         borderRadius: 14,
         paddingHorizontal: 18,
         height: 58,
+        flex: 1,
         fontSize: 18,
     },
 

@@ -1,5 +1,7 @@
 import Logo from "@/components/Logo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import { useEffect } from "react";
 import {
     StyleSheet,
     Text,
@@ -9,46 +11,53 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
+
+    useEffect(() => {
+        checkLogin();
+    }, [])
+
+    async function checkLogin() {
+        const isLoggedIn = await AsyncStorage.getItem("isLoggedIn");
+
+        if (isLoggedIn === "true") {
+            router.replace("/home");
+        }
+    }
+
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.content}>
-                <Logo />
+        <View style={styles.content}>
+            <Logo />
 
-                <TouchableOpacity
-                    style={styles.primaryButton}
-                    onPress={() => router.push("/(auth)/login")}
-                >
-                    <Text style={styles.primaryText}>Entrar</Text>
-                </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.primaryButton}
+                onPress={() => router.push("/(auth)/login")}
+            >
+                <Text style={styles.primaryText}>Entrar</Text>
+            </TouchableOpacity>
 
-                <TouchableOpacity
-                    style={styles.secondaryButton}
-                    onPress={() => router.push("/(auth)/register")}
-                >
-                    <Text style={styles.secondaryText}>Criar conta</Text>
-                </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.secondaryButton}
+                onPress={() => router.push("/(auth)/register")}
+            >
+                <Text style={styles.secondaryText}>Criar conta</Text>
+            </TouchableOpacity>
 
-                <TouchableOpacity
-                    style={styles.googleButton}
-                    onPress={() => {
-                        // Login Google futuramente
-                    }}
-                >
-                    <Text style={styles.googleText}>
-                        Continuar com Google
-                    </Text>
-                </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.googleButton}
+                onPress={() => {
+                    // Login Google futuramente
+                }}
+            >
+                <Text style={styles.googleText}>
+                    Continuar com Google
+                </Text>
+            </TouchableOpacity>
 
-            </View>
-        </SafeAreaView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#FFF",
-    },
 
     content: {
         flex: 1,
