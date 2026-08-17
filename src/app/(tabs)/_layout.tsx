@@ -1,16 +1,14 @@
-import { Colors } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
-import { useColorScheme } from "react-native";
-import * as NavigationBar from "expo-navigation-bar";
 import { HapticTab } from "@/components/haptic-tab";
+import NotificationBadge from "@/components/NotificationBadge";
+import { useTheme } from "@/contexts/themeContext";
 
 
 export default function TabLayout() {
 
-    const colorScheme = useColorScheme() ?? "light";
-    const colors = Colors[colorScheme];
+    const { colors } = useTheme();
 
     return (
         <Tabs 
@@ -40,7 +38,10 @@ export default function TabLayout() {
                 options={{
                     title: "Mensagens",
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="chatbox" size={size} color={color} />
+                        <>
+                            <Ionicons name="chatbox" size={size} color={color} />
+                            <NotificationBadge quantity={1} />
+                        </>
                     )
                 }}
             />

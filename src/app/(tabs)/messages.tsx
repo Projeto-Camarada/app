@@ -1,10 +1,8 @@
 import { Colors } from "@/constants/theme";
+import { useTheme } from "@/contexts/themeContext";
+import { ThemeColors } from "@/types/ThemeColors";
 import { router } from "expo-router";
 import { FlatList, Pressable, StyleSheet, Text, useColorScheme, View } from "react-native";
-
-
-const colorScheme = useColorScheme() ?? "light";
-const colors = Colors[colorScheme];
 
 const chats = [
     {
@@ -36,6 +34,10 @@ const chats = [
 
 
 export default function Messages() {
+
+    const { colors } = useTheme();
+    const styles = createStyles(colors);
+
 
     function sendToChat(id: string) {
         router.push({
@@ -107,7 +109,10 @@ export default function Messages() {
     );
 }
 
-const styles = StyleSheet.create({
+
+const createStyles = (
+    colors: ThemeColors
+) => StyleSheet.create({
 
     container: {
         flex: 1,

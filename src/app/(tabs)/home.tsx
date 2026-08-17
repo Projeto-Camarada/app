@@ -1,4 +1,7 @@
+import NotificationBadge from "@/components/NotificationBadge";
 import { Colors } from "@/constants/theme";
+import { useTheme } from "@/contexts/themeContext";
+import { ThemeColors } from "@/types/ThemeColors";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
@@ -29,14 +32,8 @@ const opportunities = [
 
 export default function HomeScreen() {
 
-    const colorScheme = useColorScheme() ?? "light";
-    const colors = Colors[colorScheme];
-
+    const { colors } = useTheme();
     const styles = createStyles(colors);
-
-    function goToOpportunities() {
-        // router.push("/opportunities");
-    }
 
     return (
         <FlatList
@@ -52,17 +49,13 @@ export default function HomeScreen() {
                 <>
                     <View style={styles.header}>
                         <Text style={styles.title}>Thiago Vieira</Text>
-                        <Pressable style={styles.notificationButton}>
+                        <Pressable style={styles.notificationButton} onPress={() => router.push("/notifications")}>
                             <Ionicons name="notifications" size={24} style={styles.notificationIcon}/>
-                            <View style={styles.notificationQuantity}>
-                                <Text style={styles.notificationQuantityText}>
-                                    1
-                                </Text>
-                            </View>
+                            <NotificationBadge quantity={1}/>
                         </Pressable>
                     </View>
 
-                    <Pressable style={[styles.card, styles.cardPremium]} onPress={() => goToOpportunities()}>
+                    <Pressable style={[styles.card, styles.cardPremium]} >
                         <Text style={[styles.title, styles.titlePremium]}>🔥 Oportunidades para você</Text>
 
                         <Text style={[styles.requests, styles.infoPremium]}>Não perca</Text>
@@ -117,7 +110,7 @@ export default function HomeScreen() {
     );
 }
 
-const createStyles = (colors: typeof Colors["dark" | "light"]) =>  StyleSheet.create({
+const createStyles = (colors: ThemeColors) =>  StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.backgroundSelected,
@@ -140,26 +133,6 @@ const createStyles = (colors: typeof Colors["dark" | "light"]) =>  StyleSheet.cr
 
     notificationIcon: {
         // color: "#fff"
-    },
-
-    notificationQuantity: {
-        position: "absolute",
-        justifyContent: "center",
-        alignItems: "center",
-        right: -8,
-        top: -6,
-        
-        backgroundColor: "#ff0000",
-        
-        width: 20,
-        aspectRatio: 1/1,
-        borderRadius: 10, 
-    },
-    
-    notificationQuantityText: {
-        color: "#fff",
-        fontSize: 14,
-        fontWeight: "800",
     },
 
     title: {

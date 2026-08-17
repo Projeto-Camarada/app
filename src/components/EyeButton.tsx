@@ -1,13 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
-interface PropsEyeButton {
+interface EyeButtonProps {
     text: boolean;
     showText: (text: boolean) => void
 };
 
 
-export default function EyeButton({ text, showText }: PropsEyeButton) {
+export default function EyeButton({ text, showText }: EyeButtonProps) {
     return (
         <TouchableOpacity
             onPress={() => showText(!text)}

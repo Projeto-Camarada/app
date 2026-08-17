@@ -4,17 +4,18 @@
  */
 
 import '@/global.css';
+import { ThemeColors } from '@/types/ThemeColors';
 
 import { Platform } from 'react-native';
 
-export const Colors = {
+export const Colors: Record<"light" | "dark", ThemeColors> = {
     light: {
-        primary: '#E69D3f',
+        primary: '#E69D3F',
 
         text: '#000000',
         textSecondary: '#6B7280',
 
-        background: '#ffffff',
+        background: '#FFFFFF',
         backgroundElement: '#F8F8F8',
         backgroundSelected: '#F2F2F2',
 
@@ -49,7 +50,7 @@ export const Colors = {
         premium: "#D4AF37",
         premiumDark: "#5E4B1F",
     },
-} as const;
+};
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
