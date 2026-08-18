@@ -8,13 +8,17 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useTheme } from "@/contexts/themeContext";
+import { ThemeColors } from "@/types/ThemeColors";
 
 export default function Index() {
 
+    const { colors } = useTheme();
+    const styles = createStyles(colors);
+
     useEffect(() => {
         checkLogin();
-    }, [])
+    }, []);
 
     async function checkLogin() {
         const isLoggedIn = await AsyncStorage.getItem("isLoggedIn");
@@ -26,20 +30,29 @@ export default function Index() {
 
     return (
         <View style={styles.content}>
+
             <Logo />
 
             <TouchableOpacity
                 style={styles.primaryButton}
-                onPress={() => router.push("/(auth)/login")}
+                onPress={() =>
+                    router.push("/(auth)/login")
+                }
             >
-                <Text style={styles.primaryText}>Entrar</Text>
+                <Text style={styles.primaryText}>
+                    Entrar
+                </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
                 style={styles.secondaryButton}
-                onPress={() => router.push("/(auth)/register")}
+                onPress={() =>
+                    router.push("/(auth)/register")
+                }
             >
-                <Text style={styles.secondaryText}>Criar conta</Text>
+                <Text style={styles.secondaryText}>
+                    Criar conta
+                </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -57,36 +70,17 @@ export default function Index() {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
 
     content: {
         flex: 1,
         justifyContent: "center",
         paddingHorizontal: 30,
-    },
-
-    logo: {
-        fontSize: 70,
-        textAlign: "center",
-        marginBottom: 20,
-    },
-
-    title: {
-        fontSize: 34,
-        fontWeight: "700",
-        textAlign: "center",
-    },
-
-    subtitle: {
-        textAlign: "center",
-        color: "#666",
-        marginTop: 10,
-        marginBottom: 50,
-        fontSize: 16,
+        backgroundColor: colors.backgroundSelected,
     },
 
     primaryButton: {
-        backgroundColor: "#ff6b00",
+        backgroundColor: colors.primary,
         height: 55,
         borderRadius: 14,
         justifyContent: "center",
@@ -95,14 +89,15 @@ const styles = StyleSheet.create({
     },
 
     primaryText: {
-        color: "#FFF",
+        color: colors.background,
         fontWeight: "700",
         fontSize: 17,
     },
 
     secondaryButton: {
         borderWidth: 1,
-        borderColor: "#ff6b00",
+        borderColor: colors.primary,
+        backgroundColor: colors.card,
         height: 55,
         borderRadius: 14,
         justifyContent: "center",
@@ -111,7 +106,7 @@ const styles = StyleSheet.create({
     },
 
     secondaryText: {
-        color: "#ff6b00",
+        color: colors.primary,
         fontWeight: "700",
         fontSize: 17,
     },
@@ -121,11 +116,14 @@ const styles = StyleSheet.create({
         borderRadius: 14,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#F2F2F2",
+        backgroundColor: colors.card,
+        borderWidth: 1,
+        borderColor: colors.border,
     },
 
     googleText: {
         fontSize: 16,
         fontWeight: "600",
+        color: colors.text,
     },
 });

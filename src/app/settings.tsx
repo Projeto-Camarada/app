@@ -3,6 +3,7 @@ import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/themeContext";
 import { ThemeColors } from "@/types/ThemeColors";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import {
     Pressable,
@@ -18,6 +19,11 @@ export default function Settings() {
     const { colors } = useTheme();
 
     const styles = createStyles(colors);
+
+    async function handleLogout() {
+        await AsyncStorage.removeItem("isLoggedIn");
+        router.replace("/");
+    }
 
     return (
         <ScrollView
@@ -111,6 +117,7 @@ export default function Settings() {
                     title="Sair da conta"
                     titleColor={colors.danger}
                     description="Encerrar sua sessão"
+                    onPress={() => handleLogout()}
                 />             
 
                 <SettingsOption 
