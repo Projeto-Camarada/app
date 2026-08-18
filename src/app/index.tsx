@@ -21,7 +21,7 @@ export default function Index() {
     }, []);
 
     async function checkLogin() {
-        const isLoggedIn = await AsyncStorage.getItem("isLoggedIn");
+        const isLoggedIn = await AsyncStorage.getItem("token");
 
         if (isLoggedIn === "true") {
             router.replace("/home");

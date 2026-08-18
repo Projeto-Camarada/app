@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { login } from "@/services/authService";
+import Toast from "@/components/Toast";
 
 export default function Login() {
 
@@ -26,6 +27,19 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [hidePassword, setHidePassword] = useState(true);
     const [focusedInput, setFocusedInput] = useState("");
+
+    const [toastVisible, setToastVisible] = useState(false);
+    const [toastMessage, setToastMessage] = useState("");
+    const [toastType, setToastType] = useState<"success" | "error" | "info">("info");
+
+    function showToast(
+        message: string,
+        type: "success" | "error" | "info" = "info"
+    ) {
+        setToastMessage(message);
+        setToastType(type);
+        setToastVisible(true);
+    }
 
     function formatPhone(value: string) {
         const numbers = value.replace(/\D/g, "").slice(0, 11);
@@ -41,7 +55,32 @@ export default function Login() {
         return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7)}`;
     }
 
+    function validInput() {
+        if (!phone.trim() || phone.length != 11) {
+            showToast(
+                "Telefone inválido",
+                "error"
+            );
+            return false;
+        }
+
+        if (!password.trim()) {
+            showToast(
+                "Senha inválida",
+                "error"
+            );
+            return false;
+        }
+        
+        return true;
+    }
+
     async function handleLogin() {
+
+        if (!validInput()) {
+            return;
+        }
+
         try {
             const data = await login(phone, password);
 
@@ -49,8 +88,22 @@ export default function Login() {
 
             router.replace("/home");
 
-        } catch (error) {
+        } catch (error: any) {
+            
             console.log(error);
+            
+
+            if (error.status === 401) {
+                showToast(
+                    error.message,
+                    "error"
+                )
+            } else {
+                showToast(
+                    "Erro Interno",
+                    "error"
+                )
+            } 
         }
     }
 
@@ -125,6 +178,13 @@ export default function Login() {
                 </Pressable>
 
             </View>
+
+            <Toast
+                visible={toastVisible}
+                message={toastMessage}
+                type={toastType}
+                onHide={() => setToastVisible(false)}
+            />
         </SafeAreaView>
     );
 }

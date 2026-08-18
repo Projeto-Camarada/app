@@ -1,15 +1,28 @@
+import axios from "axios";
 import { api } from "./api";
 
 export async function login(
     phone: string,
     password: string
 ) {
-    const response = await api.post("/auth/login", {
-        phone,
-        password
-    })
+    try {
+        const response = await api.post("/auth/login", {
+            phone,
+            password
+        })
 
-    return response.data;
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw {
+                code: error.response?.data?.code,
+                message: error.response?.data?.message,
+                status: error.response?.status,
+            };
+        }
+
+        throw error;
+    }
 };
 
 export async function register(data: {
@@ -18,7 +31,20 @@ export async function register(data: {
     password: string,
     phone: string
 }) {
-    const response = await api.post("/auth/register", data);
+    try {
+        const response = await api.post("/auth/register", data);
 
-    return response.data;
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw {
+                code: error.response?.data?.code,
+                message: error.response?.data?.message,
+                status: error.response?.status,
+            };
+        }
+
+        throw error;
+    }
+
 };

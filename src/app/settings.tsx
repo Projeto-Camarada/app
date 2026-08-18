@@ -21,7 +21,7 @@ export default function Settings() {
     const styles = createStyles(colors);
 
     async function handleLogout() {
-        await AsyncStorage.removeItem("isLoggedIn");
+        await AsyncStorage.removeItem("token");
         router.replace("/");
     }
 
