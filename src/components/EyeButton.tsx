@@ -2,19 +2,19 @@ import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
 interface EyeButtonProps {
-    text: boolean;
-    showText: (text: boolean) => void
+    isActive: boolean;
+    setIsActive: (text: boolean) => void
 };
 
 
-export default function EyeButton({ text, showText }: EyeButtonProps) {
+export default function EyeButton({ isActive, setIsActive }: EyeButtonProps) {
     return (
         <TouchableOpacity
-            onPress={() => showText(!text)}
+            onPress={() => setIsActive(!isActive)}
             style={styles.eyeButton}
         >
             <Ionicons
-                name={text ? "eye-off-outline" : "eye-outline"}
+                name={isActive ? "eye-off-outline" : "eye-outline"}
                 size={24}
                 color="#666"
             />

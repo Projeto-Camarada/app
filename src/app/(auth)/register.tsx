@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -15,6 +15,14 @@ import { register } from "@/services/authService";
 import Logo from "@/components/Logo";
 import { useTheme } from "@/contexts/themeContext";
 import { ThemeColors } from "@/types/ThemeColors";
+import { isValidEmail } from "@/validators/email";
+import { formatPhone } from "@/validators/phone";
+import Toast from "@/components/Toast";
+import { formatCpfCnpj, isValidCpfCnpj } from "@/validators/cpfCnpj";
+import { getProfessions } from "@/services/professionService";
+import FormInput from "@/components/FormInput";
+
+
 
 export default function RegisterScreen() {
 
@@ -24,8 +32,12 @@ export default function RegisterScreen() {
     const [step, setStep] = useState(0);
     const [hidePassword, setHidePassword] = useState(true);
 
+    const [professions, setProfessions] = useState<any[]>([]);
+
     const [form, setForm] = useState({
         name: "",
+        // services: [],
+        document: "",
         email: "",
         phone: "",
         password: "",
@@ -36,6 +48,18 @@ export default function RegisterScreen() {
             key: "name",
             title: "Como você se chama?",
             placeholder: "Digite seu nome",
+            keyboard: "default",
+        },
+        {
+            key: "services",
+            title: "Com o que você trabalha?",
+            placeholder: "Trabalho",
+            keyboard: "default",
+        },
+        {
+            key: "document",
+            title: "Qual seu CPF/CNPJ?",
+            placeholder: "Digite seu CPF/CNPJ",
             keyboard: "default",
         },
         {
@@ -59,42 +83,48 @@ export default function RegisterScreen() {
         },
     ];
 
-    function formatPhone(value: string) {
-        const numbers = value.replace(/\D/g, "").slice(0, 11);
-
-        if (numbers.length <= 2) {
-            return numbers;
-        }
-
-        if (numbers.length <= 7) {
-            return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
-        }
-
-        return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7)}`;
-    }
-
-    function isValidEmail(email: string) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
     const current = steps[step];
+
+    const [toastVisible, setToastVisible] = useState(false);
+    const [toastMessage, setToastMessage] = useState("");
+    const [toastType, setToastType] = useState<"success" | "error" | "info">("info");
+
+    function showToast(
+        message: string,
+        type: "success" | "error" | "info" = "info"
+    ) {
+        setToastMessage(message);
+        setToastType(type);
+        setToastVisible(true);
+    }
 
     function next() {
         const value = form[current.key as keyof typeof form];
 
-        if (!value.trim() && current.key !== "email") return;
+        if (!value.trim() && current.key !== "email") {
+            showToast(
+                "Campo inválido",
+                "error"
+            );
+            
+            return
+        };
 
         if (
             current.key === "email" &&
             value.trim() &&
             !isValidEmail(value)
         ) {
-            Alert.alert(
-                "E-mail inválido",
-                "Digite um e-mail válido."
+            showToast(
+                "Email inválido",
+                "error"
             );
 
             return;
+        }
+
+        if (current.key === "document") {
+            isValidCpfCnpj(value);
         }
 
         if (step < steps.length - 1) {
@@ -118,7 +148,10 @@ export default function RegisterScreen() {
         try {
             await register(form);
 
-            Alert.alert("Usuário criado com sucesso");
+            showToast(
+                "Usuário criado com sucesso",
+                "success"
+            );
 
             router.replace("/(auth)/login");
         } catch (err) {
@@ -127,6 +160,20 @@ export default function RegisterScreen() {
     }
 
     const progress = ((step + 1) / steps.length) * 100;
+
+    useEffect(() => {
+        const handleGetProfessions = async () => {
+            try {
+                const data = await getProfessions();
+                setProfessions(data)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        handleGetProfessions();
+
+    }, []);
 
     return (
         <KeyboardAvoidingView
@@ -158,53 +205,20 @@ export default function RegisterScreen() {
                 {current.title}
             </Text>
 
-            <View style={styles.inputContainer}>
-
-                <TextInput
-                    key={current.key}
-                    style={styles.input}
-                    placeholder={current.placeholder}
-                    placeholderTextColor={colors.text}
-                    autoCapitalize={
-                        current.key === "email"
-                            ? "none"
-                            : "words"
-                    }
-                    keyboardType={current.keyboard as any}
-                    secureTextEntry={
-                        current.key === "password" &&
-                        hidePassword
-                    }
-                    value={
-                        current.key === "phone"
-                            ? formatPhone(form.phone)
-                            : form[current.key as keyof typeof form]
-                    }
-                    onChangeText={(text) => {
-
-                        let value = text;
-
-                        if (current.key === "phone") {
-                            value = text
-                                .replace(/\D/g, "")
-                                .slice(0, 11);
-                        }
-
-                        setForm({
-                            ...form,
-                            [current.key]: value,
-                        });
-                    }}
-                />
-
-                {current.key === "password" && (
-                    <EyeButton
-                        text={hidePassword}
-                        showText={setHidePassword}
-                    />
-                )}
-
-            </View>
+            <FormInput
+                field={current.key}
+                value={form[current.key as keyof typeof form]}
+                placeholder={current.placeholder}
+                keyboardType={current.keyboard as any}
+                hidePassword={hidePassword}
+                setHidePassword={setHidePassword}
+                onChange={(value) => {
+                    setForm(prev => ({
+                        ...prev,
+                        [current.key]: value
+                    }));
+                }}
+            />
 
             <View style={styles.buttons}>
 
@@ -240,6 +254,13 @@ export default function RegisterScreen() {
 
             </View>
 
+            <Toast
+                visible={toastVisible}
+                message={toastMessage}
+                type={toastType}
+                onHide={() => setToastVisible(false)}
+            />
+
         </KeyboardAvoidingView>
     );
 }
@@ -259,6 +280,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
         backgroundColor: colors.border,
         borderRadius: 10,
         marginBottom: 15,
+        marginTop: 20,
     },
 
     progress: {
@@ -278,24 +300,6 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
         fontWeight: "bold",
         marginBottom: 40,
         color: colors.text,
-    },
-
-    input: {
-        borderWidth: 1,
-        borderColor: colors.border,
-        backgroundColor: colors.card,
-        color: colors.text,
-        borderRadius: 14,
-        paddingHorizontal: 18,
-        height: 58,
-        flex: 1,
-        fontSize: 18,
-    },
-
-    inputContainer: {
-        position: "relative",
-        flexDirection: "row",
-        alignItems: "center",
     },
 
     buttons: {
