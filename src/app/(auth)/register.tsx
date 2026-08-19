@@ -21,6 +21,7 @@ import Toast from "@/components/Toast";
 import { formatCpfCnpj, isValidCpfCnpj } from "@/validators/cpfCnpj";
 import { getProfessions } from "@/services/professionService";
 import FormInput from "@/components/FormInput";
+import { saveProvider } from "@/services/providerService";
 
 
 
@@ -146,7 +147,14 @@ export default function RegisterScreen() {
 
     async function handleSignIn() {
         try {
-            await register(form);
+            const userData = await register(form);
+
+            console.log(userData);
+
+            const providerData = await saveProvider(form.document, userData.id);
+
+            console.log(providerData);
+            
 
             showToast(
                 "Usuário criado com sucesso",
@@ -245,7 +253,7 @@ export default function RegisterScreen() {
                         {
                             step === steps.length - 1
                                 ? "Criar conta"
-                                : step === 1
+                                : current.key === "email"
                                     ? "Pular"
                                     : "Próximo"
                         }

@@ -161,8 +161,8 @@ export default function Login() {
                         />
 
                         <EyeButton
-                            showText={setHidePassword}
-                            text={hidePassword}
+                            setIsActive={setHidePassword}
+                            isActive={hidePassword}
                         />
                     </View>
 
