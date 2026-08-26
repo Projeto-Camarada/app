@@ -22,6 +22,7 @@ import { formatCpfCnpj, isValidCpfCnpj } from "@/validators/cpfCnpj";
 import { getProfessions } from "@/services/professionService";
 import FormInput from "@/components/FormInput";
 import { saveProvider } from "@/services/providerService";
+import { Ionicons } from "@expo/vector-icons";
 
 
 
@@ -189,6 +190,10 @@ export default function RegisterScreen() {
             behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
 
+            <Pressable style={styles.backArrowButton} onPress={() => router.back()}>
+                <Ionicons name="arrow-back" size={24} style={styles.backArrow} />
+            </Pressable>
+
             <Logo
                 size="medium"
                 showSubtitle={false}
@@ -281,6 +286,17 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
         justifyContent: "center",
         paddingHorizontal: 24,
     },
+
+    backArrowButton: {
+        position: "absolute",
+        top: 20,
+        left: 20
+    },
+
+    backArrow: {
+        color: colors.text
+    },
+
 
     progressBackground: {
         width: "100%",

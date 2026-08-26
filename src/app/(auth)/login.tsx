@@ -17,6 +17,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { login } from "@/services/authService";
 import Toast from "@/components/Toast";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Login() {
 
@@ -110,6 +111,9 @@ export default function Login() {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.content}>
+                <Pressable style={styles.backArrowButton} onPress={() => router.back()}>
+                    <Ionicons name="arrow-back" size={24} style={styles.backArrow} />
+                </Pressable>
 
                 <Logo
                     size="medium"
@@ -201,6 +205,16 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
         justifyContent: "center",
         paddingHorizontal: 30,
         paddingBottom: 136,
+    },
+
+    backArrowButton: {
+        position: "absolute",
+        top: 20,
+        left: 20
+    },
+
+    backArrow: {
+        color: colors.text
     },
 
     title: {

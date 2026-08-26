@@ -1,3 +1,5 @@
+import { useTheme } from "@/contexts/themeContext";
+import { ThemeColors } from "@/types/ThemeColors";
 import { StyleSheet, Text, View } from "react-native"
 
 type LogoSize = "small" | "medium" | "large";
@@ -31,6 +33,10 @@ export default function Logo({
     showSubtitle = true,
 }: LogoProps) {
 
+
+    const { colors } = useTheme();
+    const styles = createStyles(colors);
+    
     const currentSize = sizes[size];
 
     return (
@@ -67,7 +73,7 @@ export default function Logo({
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     container: {
         alignItems: "center",
     },
@@ -77,11 +83,12 @@ const styles = StyleSheet.create({
 
     title: {
         fontWeight: "700",
+        color: colors.text
     },
 
     subtitle: {
         textAlign: "center",
-        color: "#666",
+        color: colors.textSecondary,
         marginTop: 10,
         marginBottom: 50,
         maxWidth: 300,
