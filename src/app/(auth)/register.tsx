@@ -35,10 +35,12 @@ export default function RegisterScreen() {
     const [hidePassword, setHidePassword] = useState(true);
 
     const [professions, setProfessions] = useState<any[]>([]);
+    const [filteredProfessions, setFilteredProfessions] = useState<any[]>([]);
+    const [professionSearch, setProfessionSearch] = useState("");
 
     const [form, setForm] = useState({
         name: "",
-        // services: [],
+        services: [] as number[],
         document: "",
         email: "",
         phone: "",
@@ -101,33 +103,50 @@ export default function RegisterScreen() {
     }
 
     function next() {
-        const value = form[current.key as keyof typeof form];
 
-        if (!value.trim() && current.key !== "email") {
-            showToast(
-                "Campo inválido",
-                "error"
-            );
-            
-            return
-        };
+        if (current.key === "services") {
 
-        if (
-            current.key === "email" &&
-            value.trim() &&
-            !isValidEmail(value)
-        ) {
-            showToast(
-                "Email inválido",
-                "error"
-            );
+            if (form.services.length === 0) {
+                showToast(
+                    "Selecione pelo menos uma profissão",
+                    "error"
+                );
 
-            return;
-        }
+                return;
+            }
 
-        if (current.key === "document") {
-            isValidCpfCnpj(value);
-        }
+        } else {
+
+            const value = form[
+                current.key as Exclude<keyof typeof form, "services">
+            ];
+
+            if (!value.trim() && current.key !== "email") {
+                showToast(
+                    "Campo inválido",
+                    "error"
+                );
+                
+                return
+            };
+    
+            if (
+                current.key === "email" &&
+                value.trim() &&
+                !isValidEmail(value)
+            ) {
+                showToast(
+                    "Email inválido",
+                    "error"
+                );
+    
+                return;
+            }
+    
+            if (current.key === "document") {
+                isValidCpfCnpj(value);
+            }
+        }    
 
         if (step < steps.length - 1) {
             setStep(step + 1);
@@ -170,11 +189,28 @@ export default function RegisterScreen() {
 
     const progress = ((step + 1) / steps.length) * 100;
 
+    const availableProfessions = professions.filter(
+        profession => !form.services.includes(profession.id)
+    );
+
+    function handleProfessionSearch(value: string) {
+        setProfessionSearch(value);
+
+        const filtered = professions.filter(profession =>
+            profession.name
+                .toLowerCase()
+                .includes(value.toLowerCase())
+        );
+
+        setFilteredProfessions(filtered);
+    }
+
     useEffect(() => {
         const handleGetProfessions = async () => {
             try {
                 const data = await getProfessions();
-                setProfessions(data)
+                setProfessions(data);
+                setFilteredProfessions(data);
             } catch (error) {
                 console.log(error);
             }
@@ -220,16 +256,42 @@ export default function RegisterScreen() {
 
             <FormInput
                 field={current.key}
-                value={form[current.key as keyof typeof form]}
+                value={
+                    current.key === "services" 
+                        ? professionSearch
+                        : String(form[current.key as keyof typeof form])
+                }
                 placeholder={current.placeholder}
                 keyboardType={current.keyboard as any}
                 hidePassword={hidePassword}
                 setHidePassword={setHidePassword}
                 onChange={(value) => {
+
+                    if (current.key === "services") {
+                        handleProfessionSearch(value);
+                        return;
+                    }
+
                     setForm(prev => ({
                         ...prev,
                         [current.key]: value
                     }));
+                }}
+                suggestions={
+                    current.key === "services"
+                    ? availableProfessions
+                    : []
+                }
+                onSuggestionPress={(profession) => {
+                    setForm(prev => ({
+                        ...prev,
+                        services: [
+                            ...prev.services,
+                            profession.id
+                        ]
+                    }));
+
+                    setProfessionSearch("");
                 }}
             />
 

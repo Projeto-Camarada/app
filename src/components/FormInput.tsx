@@ -1,18 +1,27 @@
-import { TextInput, View, StyleSheet } from "react-native";
+import { TextInput, View, StyleSheet, FlatList, Pressable, Text } from "react-native";
 import EyeButton from "./EyeButton";
 import { formatPhone } from "@/validators/phone";
 import { formatCpfCnpj } from "@/validators/cpfCnpj";
 import { ThemeColors } from "@/types/ThemeColors";
 import { useTheme } from "@/contexts/themeContext";
 
+type Suggestion = {
+    id: number;
+    name: string;
+};
+
 type Props = {
     field: string;
     value: string;
     placeholder: string;
     keyboardType?: any;
+    onChange: (value: string) => void;
+    
+    suggestions?: any[];
+    onSuggestionPress?: (itens: any) => void; 
+    
     hidePassword: boolean;
     setHidePassword?: (value: boolean) => void;
-    onChange: (value: string) => void;
 };
 
 export default function FormInput({
@@ -20,9 +29,13 @@ export default function FormInput({
     value,
     placeholder,
     keyboardType,
+    onChange,
+    
+    suggestions,
+    onSuggestionPress, 
+    
     hidePassword,
     setHidePassword,
-    onChange,
 }: Props) {
 
     const { colors } = useTheme();
@@ -64,6 +77,8 @@ export default function FormInput({
     return (
         <View style={styles.container}>
 
+            {/* falta colocar os itens acima do input */}
+
             <TextInput
                 style={styles.input}
                 placeholder={placeholder}
@@ -73,13 +88,37 @@ export default function FormInput({
                 }
                 value={getValue()}
                 onChangeText={handleChange}
-            />
+            >
+
+                
+            </TextInput>
 
             {field === "password" && (
                 <EyeButton
                     isActive={hidePassword}
                     setIsActive={setHidePassword!}
                 />
+            )}
+
+            {suggestions && suggestions.length > 0 && (
+                <View style={styles.suggestionsContainer}>
+                    <FlatList
+                        data={suggestions}
+                        keyExtractor={(item) => String(item.id)}
+                        keyboardShouldPersistTaps="handled"
+                        nestedScrollEnabled
+                        renderItem={({ item }) => (
+                            <Pressable
+                                style={styles.suggestion}
+                                onPress={() => onSuggestionPress?.(item)}
+                            >
+                                <Text style={styles.suggestionText}>
+                                    {item.name}
+                                </Text>
+                            </Pressable>
+                        )}
+                    />
+                </View>
             )}
 
         </View>
@@ -92,6 +131,8 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
         position: "relative",
         flexDirection: "row",
         alignItems: "center",
+        zIndex: 2,
+        elevation: 2
     },
 
     input: {
@@ -104,6 +145,30 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
         height: 58,
         flex: 1,
         fontSize: 18,
+    },
+
+    suggestionsContainer: {
+        position: "absolute",
+        top: 52,
+        width: "100%",
+        backgroundColor: colors.background,
+        maxHeight: 200,
+        marginTop: 5,
+        borderWidth: 1,
+        borderColor: colors.primary,
+        borderRadius: 12,
+        overflow: "hidden",
+    },
+
+    suggestion: {
+        padding: 15,
+        borderColor: colors.backgroundSelected,
+        borderWidth: 1,
+    },
+
+    suggestionText: {
+        fontSize: 16,
+        color: colors.text,
     },
 
 });
