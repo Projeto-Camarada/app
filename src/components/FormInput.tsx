@@ -4,6 +4,7 @@ import { formatPhone } from "@/validators/phone";
 import { formatCpfCnpj } from "@/validators/cpfCnpj";
 import { ThemeColors } from "@/types/ThemeColors";
 import { useTheme } from "@/contexts/themeContext";
+import { Ionicons } from "@expo/vector-icons";
 
 type Suggestion = {
     id: number;
@@ -15,6 +16,7 @@ type Props = {
     value: string;
     placeholder: string;
     keyboardType?: any;
+    optionsSelected: any[];
     onChange: (value: string) => void;
     
     suggestions?: any[];
@@ -29,6 +31,7 @@ export default function FormInput({
     value,
     placeholder,
     keyboardType,
+    optionsSelected,
     onChange,
     
     suggestions,
@@ -74,10 +77,12 @@ export default function FormInput({
         return value;
     }
 
+    function closeOption() {
+           
+    }
+
     return (
         <View style={styles.container}>
-
-            {/* falta colocar os itens acima do input */}
 
             <TextInput
                 style={styles.input}
@@ -100,7 +105,7 @@ export default function FormInput({
                 />
             )}
 
-            {suggestions && suggestions.length > 0 && (
+            {suggestions && suggestions.length > 0 && value.length > 0 && (
                 <View style={styles.suggestionsContainer}>
                     <FlatList
                         data={suggestions}
@@ -118,6 +123,22 @@ export default function FormInput({
                             </Pressable>
                         )}
                     />
+                </View>
+            )} 
+            
+            {optionsSelected && optionsSelected.length > 0 && (
+                <View style={styles.containerOptionSelected}>
+                    {optionsSelected.map(it => (
+                        <View style={styles.optionSelected}>
+                            <Text style={styles.optionText}>
+                                {it.name}
+                            </Text>
+                            {/* função para remover da lista */}
+                            <Pressable onPress={closeOption}>
+                                <Ionicons name="close" color={colors.danger} size={24}/>
+                            </Pressable>
+                        </View>
+                    ))}
                 </View>
             )}
 
@@ -170,5 +191,28 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
         fontSize: 16,
         color: colors.text,
     },
+
+    containerOptionSelected: {
+        position: "absolute",
+        top: -34,
+        right: 0,
+        flexDirection: "row",
+        gap: 8
+    },
+
+    optionSelected: {
+        borderColor: colors.background,
+        borderWidth: 2,
+        flexDirection: "row",
+        backgroundColor: colors.primary,
+        borderRadius: 12,
+        paddingHorizontal: 8,
+        gap: 12,
+        alignItems: "center",
+    },
+
+    optionText: {
+        fontSize: 20
+    }
 
 });

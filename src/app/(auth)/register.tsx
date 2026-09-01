@@ -40,7 +40,7 @@ export default function RegisterScreen() {
 
     const [form, setForm] = useState({
         name: "",
-        services: [] as number[],
+        services: [] as any[],
         document: "",
         email: "",
         phone: "",
@@ -190,13 +190,14 @@ export default function RegisterScreen() {
     const progress = ((step + 1) / steps.length) * 100;
 
     const availableProfessions = professions.filter(
-        profession => !form.services.includes(profession.id)
+        profession => 
+            !form.services.includes(profession)        
     );
 
     function handleProfessionSearch(value: string) {
         setProfessionSearch(value);
 
-        const filtered = professions.filter(profession =>
+        const filtered = availableProfessions.filter(profession =>
             profession.name
                 .toLowerCase()
                 .includes(value.toLowerCase())
@@ -206,19 +207,22 @@ export default function RegisterScreen() {
     }
 
     useEffect(() => {
-        const handleGetProfessions = async () => {
-            try {
-                const data = await getProfessions();
-                setProfessions(data);
-                setFilteredProfessions(data);
-            } catch (error) {
-                console.log(error);
+
+        if (professions.length == 0) {
+            const handleGetProfessions = async () => {
+                try {
+                    const data = await getProfessions();
+                    setProfessions(data);
+                    setFilteredProfessions(data);
+                } catch (error) {
+                    console.log(error);
+                }
             }
+    
+            handleGetProfessions();
         }
 
-        handleGetProfessions();
-
-    }, []);
+    }, [step]);
 
     return (
         <KeyboardAvoidingView
@@ -226,7 +230,7 @@ export default function RegisterScreen() {
             behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
 
-            <Pressable style={styles.backArrowButton} onPress={() => router.back()}>
+            <Pressable style={styles.backArrowButton} onPress={() => router.replace("/")}>
                 <Ionicons name="arrow-back" size={24} style={styles.backArrow} />
             </Pressable>
 
@@ -279,20 +283,29 @@ export default function RegisterScreen() {
                 }}
                 suggestions={
                     current.key === "services"
-                    ? availableProfessions
+                    ? filteredProfessions
                     : []
                 }
                 onSuggestionPress={(profession) => {
-                    setForm(prev => ({
-                        ...prev,
-                        services: [
-                            ...prev.services,
-                            profession.id
-                        ]
-                    }));
+                    if (form.services.length >= 3) {
+                        showToast(
+                            "Limite de Servicos selecionados",
+                            "info"
+                        )
+                    } else {
+                        setForm(prev => ({
+                            ...prev,
+                            services: [
+                                ...prev.services,
+                                profession
+                            ]
+                        }));
+                    }
+
 
                     setProfessionSearch("");
                 }}
+                optionsSelected={form.services}
             />
 
             <View style={styles.buttons}>
