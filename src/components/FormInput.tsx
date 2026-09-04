@@ -197,7 +197,7 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
         top: -34,
         right: 0,
         flexDirection: "row",
-        gap: 8
+        gap: 8,
     },
 
     optionSelected: {

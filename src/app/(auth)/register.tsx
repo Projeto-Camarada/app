@@ -23,8 +23,12 @@ import { getProfessions } from "@/services/professionService";
 import FormInput from "@/components/FormInput";
 import { saveProvider } from "@/services/providerService";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
+type service = {
+    id: number,
+    name: string, 
+}
 
 export default function RegisterScreen() {
 
@@ -40,7 +44,7 @@ export default function RegisterScreen() {
 
     const [form, setForm] = useState({
         name: "",
-        services: [] as any[],
+        services: [] as service[],
         document: "",
         email: "",
         phone: "",
@@ -167,21 +171,32 @@ export default function RegisterScreen() {
 
     async function handleSignIn() {
         try {
-            const userData = await register(form);
+            const {services, document, ...dataUser} = form;
 
-            console.log(userData);
+            const data = await register(dataUser);
 
-            const providerData = await saveProvider(form.document, userData.id);
-
-            console.log(providerData);
+            await AsyncStorage.setItem("token", data.token)
             
+            const dataProvider = { cpfCnpj: form.document, serviceIds: form.services.map(it => it.id)}; 
+            
+            const provider = await saveProvider(dataProvider);
 
-            showToast(
-                "Usuário criado com sucesso",
-                "success"
-            );
+            if (data && provider) {
+                showToast(
+                    "Usuário criado com sucesso",
+                    "success"
+                );                
+                
+                setTimeout(() => {
+                    router.replace("/home");
+                }, 3000)
+            } else {
+                showToast(
+                    "Usuário não foi criado",
+                    "error"
+                );
+            }
 
-            router.replace("/(auth)/login");
         } catch (err) {
             console.log(err);
         }
@@ -305,7 +320,10 @@ export default function RegisterScreen() {
 
                     setProfessionSearch("");
                 }}
-                optionsSelected={form.services}
+                optionsSelected={
+                    current.key === "services" ?
+                    form.services : []
+                }
             />
 
             <View style={styles.buttons}>

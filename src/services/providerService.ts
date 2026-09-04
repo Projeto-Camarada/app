@@ -2,11 +2,13 @@ import axios from "axios";
 import { api } from "./api";
 
 export async function saveProvider(
-    cpfCnpj: string,
-    userId: string
+    data: {cpfCnpj: string, serviceIds: number[]}
 ) {
     try {
-        const response = await api.post(`/providers/${userId}`, {cpfCnpj});
+        const response = await api.post(
+            `/providers`,
+            data,
+        );
     
         return response.data;
     } catch (error) {
