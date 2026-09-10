@@ -1,9 +1,12 @@
 import NotificationBadge from "@/components/NotificationBadge";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/themeContext";
+import { getMe } from "@/services/userService";
 import { ThemeColors } from "@/types/ThemeColors";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 const opportunities = [
@@ -30,10 +33,45 @@ const opportunities = [
     },
 ];
 
+type userType = {
+    name: string
+}
+
 export default function HomeScreen() {
 
     const { colors } = useTheme();
     const styles = createStyles(colors);
+
+    const [user, setUser] = useState<userType>();
+    
+    useEffect(() => {
+        const getDataUser = async () => {
+            try {
+                const data = await getMe();
+                setUser(data);
+
+                console.log(data);
+                
+                
+
+                await AsyncStorage.setItem(
+                    "userData",
+                    JSON.stringify(data)
+                );
+            } catch (error) {
+                const userData = await AsyncStorage.getItem("userData");
+
+                if (userData) {
+                    setUser(JSON.parse(userData));
+                }
+            }
+        };
+
+        getDataUser();
+
+        console.log(user);
+        
+    }, []);
 
     return (
         <FlatList
@@ -48,7 +86,7 @@ export default function HomeScreen() {
             ListHeaderComponent={
                 <>
                     <View style={styles.header}>
-                        <Text style={styles.title}>Thiago Vieira</Text>
+                        <Text style={styles.title}>{user?.name}</Text>
                         <Pressable style={styles.notificationButton} onPress={() => router.push("/notifications")}>
                             <Ionicons name="notifications" size={24} style={styles.notificationIcon}/>
                             <NotificationBadge quantity={1}/>

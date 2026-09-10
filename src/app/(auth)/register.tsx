@@ -42,6 +42,8 @@ export default function RegisterScreen() {
     const [filteredProfessions, setFilteredProfessions] = useState<any[]>([]);
     const [professionSearch, setProfessionSearch] = useState("");
 
+    const [registering, setRegistering] = useState(false);
+
     const [form, setForm] = useState({
         name: "",
         services: [] as service[],
@@ -170,6 +172,9 @@ export default function RegisterScreen() {
     }
 
     async function handleSignIn() {
+        if (registering) return;
+        setRegistering(true);
+
         try {
             const {services, document, ...dataUser} = form;
 
@@ -346,6 +351,7 @@ export default function RegisterScreen() {
                         styles.nextButton,
                     ]}
                     onPress={next}
+                    disabled={registering}
                 >
                     <Text style={styles.nextText}>
                         {
