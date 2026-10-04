@@ -1,6 +1,7 @@
 import NotificationBadge from "@/components/NotificationBadge";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/themeContext";
+import { getRequests } from "@/services/serviceRequestService";
 import { getMe } from "@/services/userService";
 import { ThemeColors } from "@/types/ThemeColors";
 import { Ionicons } from "@expo/vector-icons";
@@ -37,12 +38,32 @@ type userType = {
     name: string
 }
 
+type professionType = {
+    id: number,
+    name: string,
+}
+
+type requestType = {
+    clientId: number,
+    clientName: string,
+    createdAt: string,
+    description: string,
+    estimatedDurationHours: number,
+    estimatedPrice: number,
+    id: string,
+    professions: professionType[]
+    status: string,
+    title: string,
+}
+
 export default function HomeScreen() {
 
     const { colors } = useTheme();
     const styles = createStyles(colors);
 
     const [user, setUser] = useState<userType>();
+
+    const [requests, setRequests] = useState<requestType[]>();
     
     useEffect(() => {
         const getDataUser = async () => {
@@ -67,7 +88,21 @@ export default function HomeScreen() {
             }
         };
 
+        const getServiceRequests = async () => {
+            try {
+                const data = await getRequests();
+                console.log(data);
+                
+                setRequests(data);
+
+            } catch (error) {
+                console.log("deu erro");
+                
+            }
+        }
+
         getDataUser();
+        getServiceRequests();
 
         console.log(user);
         
@@ -75,7 +110,7 @@ export default function HomeScreen() {
 
     return (
         <FlatList
-            data={opportunities}
+            data={requests}
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
 
@@ -114,7 +149,7 @@ export default function HomeScreen() {
                     />
 
                     <Text style={styles.jobInfo}>
-                        {item.distance}
+                        distancia
                     </Text>
 
                     <Text style={styles.jobInfo}>
@@ -122,12 +157,12 @@ export default function HomeScreen() {
                     </Text>
 
                     <Text style={styles.jobInfo}>
-                        Preciso de um pedreiro com experiencia, URGENTE!!
+                        {item.description}
                     </Text>
 
-                    <Text style={styles.price}>{item.price}</Text>
+                    <Text style={styles.price}>{item.estimatedPrice}</Text>
 
-                    <Text style={styles.date}>{item.date}</Text>
+                    <Text style={styles.date}>{item.createdAt}</Text>
 
                     <View style={styles.buttons}>
                         <Pressable style={styles.cancelButton}>
